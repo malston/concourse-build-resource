@@ -4,37 +4,38 @@ resources: #####################################################################
   type: git
   check_every: 10m
   source:
-    uri: git@github.com:jchesterpivotal/concourse-build-resource.git
+    uri: git@github.com:malston/concourse-build-resource.git
     branch: master
     private_key: ((github-robot-key))
     git_config:
     - name: user.name
-      value: Jacques Chester
+      value: Mark Alston
     - name: user.email
-      value: jchester+githubrobot@pivotal.io
+      value: malston+githubrobot@pivotal.io
 
 - name: release-image
   type: docker-image
   source:
-    repository: jchesterpivotal/concourse-build-resource
-    username: jchesterpivotal
+    repository: malston/concourse-build-resource
+    username: malston
     password: ((dockerhub-password))
 
 - name: release-version
   type: semver
   source:
-    driver: gcs
-    bucket: ((gcs-bucket-name))
-    key: concourse-build-resource-version
-    json_key: ((gcp-service-account-json-key))
-    initial_version: 0.8.0-rc.2
+    uri: git@github.com:malston/concourse-build-resource.git
+    driver: git
+    branch: version
+    private_key: ((github-robot-key))
+    file: concourse-build-resource-version
+    initial_version: 0.12.0-rc.1
 
 - name: github-release
   type: github-release
   source:
-    owner: jchesterpivotal
+    owner: malston
     repository: concourse-build-resource
-    access_token: ((github-access-token))
+    # access_token: ((github-access-token))
     drafts: true
 
 jobs: #############################################################################################
