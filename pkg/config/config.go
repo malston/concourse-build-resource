@@ -2,6 +2,8 @@ package config
 
 type Source struct {
 	ConcourseUrl   string `json:"concourse_url"`
+	Username       string `json:"username"`
+	Password       string `json:"password"`
 	Team           string `json:"team"`
 	Pipeline       string `json:"pipeline"`
 	Job            string `json:"job,omitempty"`

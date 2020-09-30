@@ -162,13 +162,29 @@ func (i inner) In() (*config.InResponse, error) {
 	}, nil
 }
 
+// BasicAuthRoundTripper implements the http.RoundTripper interface
+type BasicAuthRoundTripper struct {
+	Proxied  http.RoundTripper
+	Username string
+	Password string
+}
+
+// RoundTrip sets username and password for a basic auth request
+func (brt BasicAuthRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	if len(brt.Username) > 0 && len(brt.Password) > 0 {
+		req.SetBasicAuth(brt.Username, brt.Password)
+	}
+
+	return brt.Proxied.RoundTrip(req)
+}
+
 func NewInner(input *config.InRequest) Inner {
 	tr := &http.Transport{
 		MaxIdleConns:    10,
 		IdleConnTimeout: 30 * time.Second,
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	client := &http.Client{Transport: tr}
+	client := &http.Client{Transport: BasicAuthRoundTripper{tr, input.Source.Username, input.Source.Password}}
 	concourse := gc.NewClient(input.Source.ConcourseUrl, client, input.Source.EnableTracing)
 
 	return NewInnerUsingClient(input, concourse)

@@ -1,8 +1,11 @@
 package in_test
 
 import (
+	"net/http"
 	"testing"
 
+	"github.com/concourse/concourse/atc"
+	gc "github.com/concourse/concourse/go-concourse/concourse"
 	fakes "github.com/concourse/concourse/go-concourse/concourse/concoursefakes"
 	"github.com/concourse/concourse/go-concourse/concourse/eventstream/eventstreamfakes"
 	uuid "github.com/nu7hatch/gouuid"
@@ -10,16 +13,20 @@ import (
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
 
-	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
-	"github.com/jchesterpivotal/concourse-build-resource/pkg/in"
-
-	"github.com/concourse/concourse/atc"
-
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
+
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/in"
 )
+
+type RoundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (fn RoundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
+	return fn(r)
+}
 
 func TestInPkg(t *testing.T) {
 	gt := gomega.NewGomegaWithT(t)
@@ -402,6 +409,32 @@ func TestInPkg(t *testing.T) {
 
 				it("strips the trailing slash", func() {
 					gt.Expect(response.Metadata[0].Value).ToNot(gomega.ContainSubstring("https://example.com//teams"))
+				})
+			}, spec.Nested())
+
+			when("the username and password was specified", func() {
+				var req *http.Request
+				it.Before(func() {
+					inReq := &config.InRequest{
+						Source: config.Source{
+							ConcourseUrl: "https://example.com",
+							Username:     "my-username",
+							Password:     "my-password",
+						},
+					}
+					client := &http.Client{Transport: in.BasicAuthRoundTripper{RoundTripperFunc(func(r *http.Request) (*http.Response, error) {
+						req = r
+						return &http.Response{}, nil
+					}), inReq.Source.Username, inReq.Source.Password}}
+					fakeclient := gc.NewClient(inReq.Source.ConcourseUrl, client, false)
+
+					in.NewInnerUsingClient(inReq, fakeclient)
+					_, err = fakeclient.HTTPClient().Get(inReq.Source.ConcourseUrl)
+					gt.Expect(err).NotTo(gomega.HaveOccurred())
+				})
+
+				it("the http request has basic auth header set", func() {
+					gt.Expect(req.Header.Get("Authorization")).To(gomega.ContainSubstring("Basic"))
 				})
 			}, spec.Nested())
 		}, spec.Nested())
