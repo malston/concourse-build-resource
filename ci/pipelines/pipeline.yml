@@ -52,7 +52,7 @@ jobs: ##########################################################################
   public: true
   serial_groups: [build-and-release]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: concourse-build-resource-repo
       trigger: true
       version: every
@@ -81,7 +81,7 @@ jobs: ##########################################################################
   public: true
   serial_groups: [build-and-release]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: concourse-build-resource-repo
       passed: [build-image-rc]
     - get: release-version
@@ -103,7 +103,7 @@ jobs: ##########################################################################
   public: true
   serial_groups: [build-and-release]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: release-version
       passed: [build-image-release]
       trigger: true
