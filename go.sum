@@ -12,8 +12,6 @@ github.com/concourse/fly v4.2.5+incompatible h1:w26PdGRC9LjYSa/XAd7wgocUd0xWOz/k
 github.com/concourse/fly v4.2.5+incompatible/go.mod h1:z0mifmcQWCab07oAPL/9riJWKY7+sSCGbwU4UvNBTUg=
 github.com/concourse/go-concourse v4.2.2+incompatible h1:fd7QTk9y0be5mbBq1YJmo6lkJ4JjgLOZD2u1SEkTMlM=
 github.com/concourse/go-concourse v4.2.2+incompatible/go.mod h1:IWOiXdc/gF5FCPa8uIV8ShGqBMcpYbV8T9MZLi609Bc=
-github.com/docker/docker v1.13.1 h1:IkZjBSIc8hBjLpqeAbeE5mca5mNgeatLHBy3GO78BWo=
-github.com/docker/docker v1.13.1/go.mod h1:eEKB0N0r5NX/I1kEveEz05bcu8tLC/8azJZsviup8Sk=
 github.com/fatih/color v1.9.0 h1:8xPHl4/q1VyqGIPif1F+1V3Y3lSmrq01EabUW3CoW5s=
 github.com/fatih/color v1.9.0/go.mod h1:eQcE1qtQxscV5RaZvpXrrb8Drkc3/DdQ+uUYCNjL+zU=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=

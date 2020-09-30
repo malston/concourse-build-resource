@@ -9,7 +9,6 @@ require (
 	github.com/concourse/atc v4.2.2+incompatible
 	github.com/concourse/fly v4.2.5+incompatible
 	github.com/concourse/go-concourse v4.2.2+incompatible
-	github.com/docker/docker v1.13.1
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/google/jsonapi v0.0.0-20200825183604-3e3da1210d0c // indirect
 	github.com/jessevdk/go-flags v1.4.0 // indirect
