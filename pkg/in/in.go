@@ -7,12 +7,12 @@ import (
 	"log"
 	"strings"
 
-	"github.com/concourse/atc"
-	"github.com/concourse/fly/eventstream"
-	"github.com/moby/moby/pkg/fileutils"
+	"github.com/concourse/concourse/atc"
+	"github.com/concourse/concourse/fly/eventstream"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
+	"github.com/moby/moby/pkg/fileutils"
 
-	gc "github.com/concourse/go-concourse/concourse"
+	gc "github.com/concourse/concourse/go-concourse/concourse"
 
 	"crypto/tls"
 	"fmt"
@@ -334,7 +334,7 @@ func (i *inner) getAndWriteRenderedEventLog() error {
 		return err
 	}
 
-	eventstream.Render(eventsLogFile, eventsForLogFile)
+	eventstream.Render(eventsLogFile, eventsForLogFile, eventstream.RenderOptions{})
 	eventsLogFile.Close()
 
 	detailedLogPath := filepath.Join(i.inRequest.WorkingDirectory, fmt.Sprintf("%s.log", i.addDetailedPostfixTo("events")))
@@ -413,7 +413,7 @@ func (i *inner) buildUrl() string {
 	)
 }
 
-func (i *inner) addDetailedPostfixTo(name string, ) string {
+func (i *inner) addDetailedPostfixTo(name string) string {
 	return fmt.Sprintf(
 		"%s_%s_%s_%s_%s",
 		name,

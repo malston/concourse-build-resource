@@ -1,12 +1,13 @@
 package check
 
 import (
-	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 	"log"
 	"strings"
 
-	"github.com/concourse/atc"
-	gc "github.com/concourse/go-concourse/concourse"
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
+
+	"github.com/concourse/concourse/atc"
+	gc "github.com/concourse/concourse/go-concourse/concourse"
 
 	"crypto/tls"
 	"fmt"

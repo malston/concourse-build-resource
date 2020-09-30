@@ -9,7 +9,7 @@ import (
 	"github.com/sclevine/spec/report"
 	"testing"
 
-	"github.com/concourse/atc"
+	"github.com/concourse/concourse/atc"
 
 	"bytes"
 	"encoding/json"

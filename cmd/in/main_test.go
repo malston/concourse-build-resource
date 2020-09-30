@@ -9,7 +9,7 @@ import (
 	"github.com/sclevine/spec/report"
 	"testing"
 
-	"github.com/concourse/atc"
+	"github.com/concourse/concourse/atc"
 
 	"bytes"
 	"encoding/json"
@@ -71,7 +71,7 @@ func TestInCmd(t *testing.T) {
 						json.NewEncoder(w).Encode(atc.JobConfigs{})
 						json.NewEncoder(w).Encode(atc.JobConfig{})
 					}))
-					server.RouteToHandler("GET", "/api/v1/teams/t/pipelines/p/resource-types",  http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					server.RouteToHandler("GET", "/api/v1/teams/t/pipelines/p/resource-types", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(atc.VersionedResourceTypes{{ResourceType: atc.ResourceType{CheckEvery: "10m"}}})
 					}))
@@ -135,7 +135,7 @@ func TestInCmd(t *testing.T) {
 						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(atc.Job{})
 					}))
-					server.RouteToHandler("GET", "/api/v1/teams/t/pipelines/p/resource-types",  http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					server.RouteToHandler("GET", "/api/v1/teams/t/pipelines/p/resource-types", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 						w.Header().Set("Content-Type", "application/json")
 						json.NewEncoder(w).Encode(atc.VersionedResourceTypes{{ResourceType: atc.ResourceType{CheckEvery: "10m"}}})
 					}))

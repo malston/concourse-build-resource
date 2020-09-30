@@ -1,14 +1,15 @@
 package check_test
 
 import (
+	"testing"
+
 	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
-	"testing"
 
-	"github.com/concourse/atc"
-	"github.com/concourse/go-concourse/concourse"
-	fakes "github.com/concourse/go-concourse/concourse/concoursefakes"
+	"github.com/concourse/concourse/atc"
+	"github.com/concourse/concourse/go-concourse/concourse"
+	fakes "github.com/concourse/concourse/go-concourse/concourse/concoursefakes"
 
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/check"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
@@ -41,8 +42,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.JobBuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								true,
 								nil)
 
@@ -82,8 +82,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.JobBuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								true,
 								nil)
 
@@ -116,8 +115,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.JobBuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								true,
 								nil)
 
@@ -150,8 +148,7 @@ func TestCheckPkg(t *testing.T) {
 					it.Before(func() {
 						faketeam.JobBuildsReturnsOnCall(0,
 							[]atc.Build{},
-							concourse.Pagination{Previous: &concourse.Page{Since: 999},
-							},
+							concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 							true,
 							nil)
 
@@ -212,8 +209,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.PipelineBuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								true,
 								nil)
 
@@ -253,8 +249,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.PipelineBuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								true,
 								nil)
 
@@ -287,8 +282,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.PipelineBuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								true,
 								nil)
 
@@ -321,8 +315,7 @@ func TestCheckPkg(t *testing.T) {
 					it.Before(func() {
 						faketeam.PipelineBuildsReturnsOnCall(0,
 							[]atc.Build{},
-							concourse.Pagination{Previous: &concourse.Page{Since: 999},
-							},
+							concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 							true,
 							nil)
 
@@ -381,8 +374,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.BuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								nil)
 
 							faketeam.BuildsReturnsOnCall(1,
@@ -419,8 +411,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.BuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								nil)
 
 							faketeam.BuildsReturnsOnCall(1,
@@ -451,8 +442,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							faketeam.BuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								nil)
 
 							faketeam.BuildsReturnsOnCall(1,
@@ -483,8 +473,7 @@ func TestCheckPkg(t *testing.T) {
 					it.Before(func() {
 						faketeam.BuildsReturnsOnCall(0,
 							[]atc.Build{},
-							concourse.Pagination{Previous: &concourse.Page{Since: 999},
-							},
+							concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 							nil)
 
 						faketeam.BuildsReturnsOnCall(1,
@@ -576,8 +565,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							fakeclient.BuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								nil)
 
 							fakeclient.BuildsReturnsOnCall(1,
@@ -608,8 +596,7 @@ func TestCheckPkg(t *testing.T) {
 						it.Before(func() {
 							fakeclient.BuildsReturnsOnCall(0,
 								[]atc.Build{},
-								concourse.Pagination{Previous: &concourse.Page{Since: 999},
-								},
+								concourse.Pagination{Previous: &concourse.Page{Since: 999}},
 								nil)
 
 							fakeclient.BuildsReturnsOnCall(1,
@@ -690,7 +677,7 @@ func TestCheckPkg(t *testing.T) {
 
 					checker := check.NewCheckerUsingClient(&config.CheckRequest{
 						Version: config.Version{BuildId: "999"},
-						Source: config.Source{ConcourseUrl: "https://example.com/"},
+						Source:  config.Source{ConcourseUrl: "https://example.com/"},
 					}, fakeclient)
 					response, err = checker.Check()
 				})

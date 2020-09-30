@@ -1,18 +1,19 @@
 package in_test
 
 import (
-	fakes "github.com/concourse/go-concourse/concourse/concoursefakes"
-	"github.com/concourse/go-concourse/concourse/eventstream/eventstreamfakes"
-	"github.com/nu7hatch/gouuid"
+	"testing"
+
+	fakes "github.com/concourse/concourse/go-concourse/concourse/concoursefakes"
+	"github.com/concourse/concourse/go-concourse/concourse/eventstream/eventstreamfakes"
+	uuid "github.com/nu7hatch/gouuid"
 	"github.com/onsi/gomega"
 	"github.com/sclevine/spec"
 	"github.com/sclevine/spec/report"
-	"testing"
 
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/in"
 
-	"github.com/concourse/atc"
+	"github.com/concourse/concourse/atc"
 
 	"fmt"
 	"io"
@@ -60,7 +61,7 @@ func TestInPkg(t *testing.T) {
 					}, true, nil)
 					fakeclient.BuildResourcesReturns(atc.BuildInputsOutputs{
 						Inputs:  []atc.PublicBuildInput{},
-						Outputs: []atc.VersionedResource{},
+						Outputs: []atc.PublicBuildOutput{},
 					}, true, nil)
 					fakeclient.BuildPlanReturns(atc.PublicBuildPlan{}, true, nil)
 					faketeam.JobReturns(atc.Job{}, true, nil)
@@ -286,7 +287,7 @@ func TestInPkg(t *testing.T) {
 					}, true, nil)
 					fakeclient.BuildResourcesReturns(atc.BuildInputsOutputs{
 						Inputs:  []atc.PublicBuildInput{},
-						Outputs: []atc.VersionedResource{},
+						Outputs: []atc.PublicBuildOutput{},
 					}, true, nil)
 					fakeclient.BuildPlanReturns(atc.PublicBuildPlan{}, true, nil)
 					faketeam.JobReturns(atc.Job{
