@@ -2,14 +2,15 @@ package in
 
 import (
 	"encoding/json"
-	"github.com/concourse/atc"
-	"github.com/concourse/fly/eventstream"
-	"github.com/docker/docker/pkg/fileutils"
-	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 	"io"
 	"io/ioutil"
 	"log"
 	"strings"
+
+	"github.com/concourse/atc"
+	"github.com/concourse/fly/eventstream"
+	"github.com/moby/moby/pkg/fileutils"
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 
 	gc "github.com/concourse/go-concourse/concourse"
 
