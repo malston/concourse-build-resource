@@ -171,10 +171,19 @@ type BasicAuthRoundTripper struct {
 
 // RoundTrip sets username and password for a basic auth request
 func (brt BasicAuthRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	if len(brt.Username) > 0 && len(brt.Password) > 0 {
-		req.SetBasicAuth(brt.Username, brt.Password)
+	if brt.Proxied == nil {
+		brt.Proxied = http.DefaultTransport
 	}
-
+	if len(brt.Username) > 0 && len(brt.Password) > 0 {
+		rClone := new(http.Request)
+		*rClone = *req
+		rClone.Header = make(http.Header, len(req.Header))
+		for idx, header := range req.Header {
+			rClone.Header[idx] = append([]string(nil), header...)
+		}
+		rClone.SetBasicAuth(brt.Username, brt.Password)
+		return brt.Proxied.RoundTrip(rClone)
+	}
 	return brt.Proxied.RoundTrip(req)
 }
 
