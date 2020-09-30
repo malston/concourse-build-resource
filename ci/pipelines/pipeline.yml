@@ -35,7 +35,7 @@ resources: #####################################################################
   source:
     owner: malston
     repository: concourse-build-resource
-    # access_token: ((github-access-token))
+    access_token: ((github-access-token))
     drafts: true
 
 jobs: #############################################################################################
