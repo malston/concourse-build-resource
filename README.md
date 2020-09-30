@@ -159,8 +159,8 @@ resource_types:
   type: docker-image
   check_every: 30m
   source:
-    repository: jchesterpivotal/concourse-build-resource
-    tag: v0.11.1 # check https://github.com/jchesterpivotal/concourse-build-resource/releases
+    repository: malston/concourse-build-resource
+    tag: v0.8.0-rc.20 # check https://github.com/jchesterpivotal/concourse-build-resource/releases
 
 resources:
 - name: build
@@ -177,7 +177,7 @@ resources:
   type: git
   source:
     uri: https://github.com/jchesterpivotal/concourse-build-resource.git
-    tag: v0.11.1 # check https://github.com/jchesterpivotal/concourse-build-resource/releases
+    tag: v0.8.0-rc.20 # check https://github.com/jchesterpivotal/concourse-build-resource/releases
 
 jobs:
 # ....
