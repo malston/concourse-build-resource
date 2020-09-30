@@ -14,6 +14,7 @@ export RELEASE_VERSION=$(cat version/version)
 export RELEASE_GIT_REF=$(cat concourse-build-resource-repo/.git/short_ref)
 
 pushd concourse-build-resource-repo
+    go mod vendor
     go build -mod=vendor -o ../binaries/build-pass-fail  cmd/build-pass-fail/main.go
 
     go build -o ../binaries/show-build       cmd/show-build/main.go
