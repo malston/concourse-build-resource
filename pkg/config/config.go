@@ -23,6 +23,11 @@ type VersionMetadataField struct {
 	Value string `json:"value"`
 }
 
+type TargetToken struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
 type InRequest struct {
 	Source           Source   `json:"source"`
 	Version          Version  `json:"version"`
@@ -32,6 +37,7 @@ type InRequest struct {
 	ReleaseGitRef    string
 	GetTimestamp     int64
 	GetUuid          string
+	Token            *TargetToken `json:"token,omitempty"`
 }
 
 type InResponse struct {
