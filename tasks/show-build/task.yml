@@ -4,7 +4,7 @@ image_resource:
   type: docker-image
   source:
     repository: malston/concourse-build-resource
-    tag: v0.12.0-rc.2
+    tag: v0.12.0-rc.7
 
 inputs:
 - name: build
