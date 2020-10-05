@@ -105,7 +105,7 @@ func TestCheckCmd(t *testing.T) {
 				)
 
 				cmd := exec.Command(compiledPath)
-				input := fmt.Sprintf(`{"version":{"build_id":"111"},"source":{"concourse_url":"%s","username","%s","password","%s","team":"t","pipeline":"p","job":"j"}}`, server.URL(), "admin", "password")
+				input := fmt.Sprintf(`{"version":{"build_id":"111"},"source":{"concourse_url":"%s","team":"t","pipeline":"p","job":"j"}}`, server.URL())
 				cmd.Stdin = bytes.NewBufferString(input)
 				session, err = gexec.Start(cmd, it.Out(), it.Out())
 				gt.Expect(err).NotTo(gomega.HaveOccurred())
@@ -153,7 +153,7 @@ func TestCheckCmd(t *testing.T) {
 				}))
 
 				cmd := exec.Command(compiledPath)
-				input := fmt.Sprintf(`{"version":{"build_id":"111"},"source":{"concourse_url":"%s","username":"%s","password":"%s","team":"t","pipeline":"p","job":"j","enable_tracing":true}}`, server.URL(), "admin", "password")
+				input := fmt.Sprintf(`{"version":{"build_id":"111"},"source":{"concourse_url":"%s","team":"t","pipeline":"p","job":"j","enable_tracing":true}}`, server.URL())
 				cmd.Stdin = bytes.NewBufferString(input)
 				session, err = gexec.Start(cmd, it.Out(), it.Out())
 				gt.Expect(err).NotTo(gomega.HaveOccurred())

@@ -175,13 +175,16 @@ func transport(insecure bool) http.RoundTripper {
 }
 
 func NewChecker(input *config.CheckRequest) Checker {
+	var tokenType, tokenValue string
+	var err error
 	httpClient := defaultHttpClient(nil, true)
-	tokenType, tokenValue, err := passwordGrant(httpClient, input.Source.ConcourseUrl, input.Source.Username, input.Source.Password)
-	if err != nil {
-		httpClient = &http.Client{Transport: BasicAuthRoundTripper{transport(true), input.Source.Username, input.Source.Password}}
-		// httpClient = &http.Client{Transport: transport(true)}
-	} else {
-		httpClient = defaultHttpClient(&config.TargetToken{Type: tokenType, Value: tokenValue}, true)
+	if len(input.Source.Username) > 0 && len(input.Source.Password) > 0 {
+		tokenType, tokenValue, err = passwordGrant(httpClient, input.Source.ConcourseUrl, input.Source.Username, input.Source.Password)
+		if err != nil {
+			httpClient = &http.Client{Transport: BasicAuthRoundTripper{transport(true), input.Source.Username, input.Source.Password}}
+		} else {
+			httpClient = defaultHttpClient(&config.TargetToken{Type: tokenType, Value: tokenValue}, true)
+		}
 	}
 	concourse := gc.NewClient(input.Source.ConcourseUrl, httpClient, input.Source.EnableTracing)
 
