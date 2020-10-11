@@ -1,29 +1,24 @@
 package in
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"io/ioutil"
 	"log"
-	"net"
 	"strings"
 
 	"github.com/concourse/concourse/atc"
 	"github.com/concourse/concourse/fly/eventstream"
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/auth"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 	"github.com/moby/moby/pkg/fileutils"
-	"golang.org/x/oauth2"
 
 	gc "github.com/concourse/concourse/go-concourse/concourse"
 
-	"crypto/tls"
 	"fmt"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
-	"time"
 )
 
 type Inner interface {
@@ -165,100 +160,8 @@ func (i inner) In() (*config.InResponse, error) {
 	}, nil
 }
 
-// BasicAuthRoundTripper implements the http.RoundTripper interface
-type BasicAuthRoundTripper struct {
-	Proxied  http.RoundTripper
-	Username string
-	Password string
-}
-
-func passwordGrant(httpClient *http.Client, url, username, password string) (string, string, error) {
-
-	oauth2Config := oauth2.Config{
-		ClientID:     "fly",
-		ClientSecret: "Zmx5",
-		Endpoint:     oauth2.Endpoint{TokenURL: url + "/sky/issuer/token"},
-		Scopes:       []string{"openid", "profile", "email", "federated:id", "groups"},
-	}
-
-	ctx := context.WithValue(context.Background(), oauth2.HTTPClient, httpClient)
-
-	token, err := oauth2Config.PasswordCredentialsToken(ctx, username, password)
-	if err != nil {
-		return "", "", err
-	}
-
-	return token.TokenType, token.AccessToken, nil
-}
-
-func transport(insecure bool) http.RoundTripper {
-	var transport http.RoundTripper
-
-	transport = &http.Transport{
-		MaxIdleConns:    10,
-		IdleConnTimeout: 30 * time.Second,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: insecure,
-			// RootCAs:            caCertPool,
-			// Certificates:       clientCertificate,
-		},
-		Dial: (&net.Dialer{
-			Timeout: 10 * time.Second,
-		}).Dial,
-		Proxy: http.ProxyFromEnvironment,
-	}
-
-	return transport
-}
-
-func defaultHttpClient(token *config.TargetToken, insecure bool) *http.Client {
-	var oAuthToken *oauth2.Token
-	if token != nil {
-		oAuthToken = &oauth2.Token{
-			TokenType:   token.Type,
-			AccessToken: token.Value,
-		}
-	}
-
-	transport := transport(insecure)
-
-	if token != nil {
-		transport = &oauth2.Transport{
-			Source: oauth2.StaticTokenSource(oAuthToken),
-			Base:   transport,
-		}
-	}
-
-	return &http.Client{Transport: transport}
-}
-
-// RoundTrip sets username and password for a basic auth request
-func (brt BasicAuthRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	if brt.Proxied == nil {
-		brt.Proxied = http.DefaultTransport
-	}
-
-	if len(brt.Username) > 0 && len(brt.Password) > 0 {
-		rClone := new(http.Request)
-		*rClone = *req
-		rClone.Header = make(http.Header, len(req.Header))
-		for idx, header := range req.Header {
-			rClone.Header[idx] = append([]string(nil), header...)
-		}
-		rClone.SetBasicAuth(brt.Username, brt.Password)
-		return brt.Proxied.RoundTrip(rClone)
-	}
-	return brt.Proxied.RoundTrip(req)
-}
-
-func NewInner(input *config.InRequest) Inner {
-	httpClient := defaultHttpClient(nil, true)
-	tokenType, tokenValue, err := passwordGrant(httpClient, input.Source.ConcourseUrl, input.Source.Username, input.Source.Password)
-	if err != nil {
-		httpClient = &http.Client{Transport: BasicAuthRoundTripper{transport(true), input.Source.Username, input.Source.Password}}
-	} else {
-		httpClient = defaultHttpClient(&config.TargetToken{Type: tokenType, Value: tokenValue}, true)
-	}
+func NewInner(input *config.InRequest, tokenType, tokenValue string) Inner {
+	httpClient := auth.OauthHttpClient(&config.TargetToken{Type: tokenType, Value: tokenValue}, true)
 	concourse := gc.NewClient(input.Source.ConcourseUrl, httpClient, input.Source.EnableTracing)
 
 	return NewInnerUsingClient(input, concourse)

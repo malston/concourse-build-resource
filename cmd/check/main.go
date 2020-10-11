@@ -1,12 +1,15 @@
 package main
 
 import (
-	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
+	"net/http"
+
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/auth"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/check"
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 
 	"encoding/json"
-	"os"
 	"log"
+	"os"
 )
 
 func main() {
@@ -16,7 +19,16 @@ func main() {
 		log.Fatalf("failed to parse input JSON: %s", err)
 	}
 
-	checkResponse, err := check.NewChecker(&request).Check()
+	var tokenType, tokenValue string
+	if request.Source.Username != "" && request.Source.Password != "" {
+		httpClient := &http.Client{Transport: auth.NewTransport(true)}
+		tokenType, tokenValue, err = auth.PasswordGrant(httpClient, request.Source.ConcourseUrl, request.Source.Username, request.Source.Password)
+		if err != nil {
+			log.Fatalf("failed to perform 'check': %s", err)
+		}
+	}
+
+	checkResponse, err := check.NewChecker(&request, tokenType, tokenValue).Check()
 	if err != nil {
 		log.Fatalf("failed to perform 'check': %s", err)
 	}

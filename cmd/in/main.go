@@ -1,10 +1,13 @@
 package main
 
 import (
+	"net/http"
+	"time"
+
+	"github.com/jchesterpivotal/concourse-build-resource/pkg/auth"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/config"
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/in"
-	"github.com/nu7hatch/gouuid"
-	"time"
+	uuid "github.com/nu7hatch/gouuid"
 
 	"encoding/json"
 	"log"
@@ -33,7 +36,16 @@ func main() {
 	request.ReleaseGitRef = releaseGitRef
 	request.GetTimestamp = time.Now().UTC().Unix()
 
-	inResponse, err := in.NewInner(&request).In()
+	var tokenType, tokenValue string
+	if request.Source.Username != "" && request.Source.Password != "" {
+		httpClient := &http.Client{Transport: auth.NewTransport(true)}
+		tokenType, tokenValue, err = auth.PasswordGrant(httpClient, request.Source.ConcourseUrl, request.Source.Username, request.Source.Password)
+		if err != nil {
+			log.Fatalf("failed to perform 'check': %s", err)
+		}
+	}
+
+	inResponse, err := in.NewInner(&request, tokenType, tokenValue).In()
 	if err != nil {
 		log.Fatalf("failed to perform 'in': %s", err)
 	}
