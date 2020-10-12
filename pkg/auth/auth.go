@@ -12,7 +12,20 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func NewTransport(insecure bool) http.RoundTripper {
+type basicAuthTransport struct {
+	username string
+	password string
+	token    string
+
+	base http.RoundTripper
+}
+
+func (t basicAuthTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	r.SetBasicAuth(t.username, t.password)
+	return t.base.RoundTrip(r)
+}
+
+func Transport(insecure bool) http.RoundTripper {
 	var transport http.RoundTripper
 
 	transport = &http.Transport{
@@ -20,8 +33,8 @@ func NewTransport(insecure bool) http.RoundTripper {
 		IdleConnTimeout: 30 * time.Second,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: insecure,
-			// RootCAs:            caCertPool,
-			// Certificates:       clientCertificate,
+			RootCAs:            nil,
+			Certificates:       []tls.Certificate{},
 		},
 		Dial: (&net.Dialer{
 			Timeout: 10 * time.Second,
@@ -30,6 +43,17 @@ func NewTransport(insecure bool) http.RoundTripper {
 	}
 
 	return transport
+}
+
+func BasicAuthHttpClient(username string, password string, insecure bool) *http.Client {
+	return &http.Client{
+		Transport: basicAuthTransport{
+			username: username,
+			password: password,
+			token:    password,
+			base:     Transport(insecure),
+		},
+	}
 }
 
 func OauthHttpClient(token *config.TargetToken, insecure bool) *http.Client {
@@ -41,16 +65,17 @@ func OauthHttpClient(token *config.TargetToken, insecure bool) *http.Client {
 		}
 	}
 
-	transport := NewTransport(insecure)
+	base := Transport(insecure)
 
 	if token != nil {
-		transport = &oauth2.Transport{
+		transport := &oauth2.Transport{
 			Source: oauth2.StaticTokenSource(oAuthToken),
-			Base:   transport,
+			Base:   base,
 		}
+		return &http.Client{Transport: transport}
 	}
 
-	return &http.Client{Transport: transport}
+	return &http.Client{Transport: base}
 }
 
 func PasswordGrant(httpClient *http.Client, url, username, password string) (string, string, error) {

@@ -21,7 +21,7 @@ func main() {
 
 	var tokenType, tokenValue string
 	if request.Source.Username != "" && request.Source.Password != "" {
-		httpClient := &http.Client{Transport: auth.NewTransport(true)}
+		httpClient := &http.Client{Transport: auth.Transport(true)}
 		tokenType, tokenValue, err = auth.PasswordGrant(httpClient, request.Source.ConcourseUrl, request.Source.Username, request.Source.Password)
 		if err != nil {
 			log.Fatalf("failed to perform 'check': %s", err)
