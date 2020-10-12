@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/jchesterpivotal/concourse-build-resource/pkg/auth"
@@ -38,10 +37,9 @@ func main() {
 
 	var tokenType, tokenValue string
 	if request.Source.Username != "" && request.Source.Password != "" {
-		httpClient := &http.Client{Transport: auth.Transport(true)}
-		tokenType, tokenValue, err = auth.PasswordGrant(httpClient, request.Source.ConcourseUrl, request.Source.Username, request.Source.Password)
+		tokenType, tokenValue, err = auth.Login(request.Source.ConcourseUrl, request.Source.Username, request.Source.Password)
 		if err != nil {
-			log.Fatalf("failed to perform 'check': %s", err)
+			log.Fatalf("failed to perform 'in': %s", err)
 		}
 	}
 

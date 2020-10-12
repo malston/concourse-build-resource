@@ -25,7 +25,7 @@ func (t basicAuthTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	return t.base.RoundTrip(r)
 }
 
-func Transport(insecure bool) http.RoundTripper {
+func transport(insecure bool) http.RoundTripper {
 	var transport http.RoundTripper
 
 	transport = &http.Transport{
@@ -51,7 +51,7 @@ func BasicAuthHttpClient(username string, password string, insecure bool) *http.
 			username: username,
 			password: password,
 			token:    password,
-			base:     Transport(insecure),
+			base:     transport(insecure),
 		},
 	}
 }
@@ -65,7 +65,7 @@ func OauthHttpClient(token *config.TargetToken, insecure bool) *http.Client {
 		}
 	}
 
-	base := Transport(insecure)
+	base := transport(insecure)
 
 	if token != nil {
 		transport := &oauth2.Transport{
@@ -78,7 +78,7 @@ func OauthHttpClient(token *config.TargetToken, insecure bool) *http.Client {
 	return &http.Client{Transport: base}
 }
 
-func PasswordGrant(httpClient *http.Client, url, username, password string) (string, string, error) {
+func passwordGrant(httpClient *http.Client, url, username, password string) (string, string, error) {
 
 	oauth2Config := oauth2.Config{
 		ClientID:     "fly",
@@ -95,4 +95,9 @@ func PasswordGrant(httpClient *http.Client, url, username, password string) (str
 	}
 
 	return token.TokenType, token.AccessToken, nil
+}
+
+func Login(username, password, concourseURL string) (string, string, error) {
+	httpClient := &http.Client{Transport: transport(true)}
+	return passwordGrant(httpClient, concourseURL, username, password)
 }
